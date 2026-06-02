@@ -1,4 +1,4 @@
-![Pipeline](project_overview_pipeline.png)
+
 
                           Telecom Churn Prediction Project
 
