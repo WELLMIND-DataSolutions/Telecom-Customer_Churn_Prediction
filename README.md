@@ -157,8 +157,3 @@ The project produces:
 
 The trained model is saved as `random_forest_churn_model.pkl` and SHAP values are saved as `shap_values.pkl`. The project contains **38+ visualization plots** documenting model performance and customer risk insights. :contentReference[oaicite:3]{index=3}
 
----
-
-## Workflow Diagram
-
-![Telecom Customer Churn Prediction Workflow](docs/workflow.png)
