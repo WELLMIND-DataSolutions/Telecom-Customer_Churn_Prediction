@@ -1,30 +1,164 @@
+# Telecom Customer Churn Prediction
+![Workflow Diagram](Workflow.jpeg)
 
+## Overview
 
-                          Telecom Churn Prediction Project
+**Telecom Customer Churn Prediction** is a machine learning system designed to identify telecom customers who are likely to stop using services.
 
-Project Overview 
+The system processes historical customer behavior data, performs data cleaning and exploratory analysis, engineers behavioral features, selects the most relevant predictors, trains multiple machine learning models, and identifies high-risk customers for targeted retention.
 
-This project processes raw telecom customer data through eight pipeline stages to predict which customers will stop using services, with churn defined as zero recharge and zero data usage in month nine. All month-nine columns are removed to prevent data leakage, missing values are handled using median and mode, and exploratory data analysis applies skewness transformation, outlier capping, and Spearman correlation. Feature engineering creates behavioral metrics including total activity, RFM features, activity trends, and efficiency ratios, followed by leakage detection scanning for perfect correlation and ID-like patterns. Feature selection reduces features from 150 to 25 using VIF analysis, correlation threshold of 0.95, and SMOTE balancing to handle the 14.5 percent churn rate. Five models are trained using five-fold stratified cross-validation optimized for F1 score, with Random Forest achieving the best performance of 86.4 percent accuracy and 0.91 AUC-ROC.
+The project defines churn as customers having **zero recharge and zero data usage in month nine** and removes month-nine features to prevent data leakage.
 
-Working Methodology
+---
 
-The data cleaning stage loads raw CSV data, creates the churn target based on month nine behavior where customers with zero recharge and zero data usage are marked as churned, removes all month nine columns to prevent data leakage, fills numeric missing values with median, fills categorical missing values with mode, and saves the cleaned dataset for further processing.
+## Aim
 
-The exploratory data analysis stage applies skewness transformations using log and square root methods to normalize highly skewed distributions, performs outlier capping using the interquartile range where values beyond 1.5 times IQR are clipped to the bounds, conducts normality testing using D'Agostino's test to determine appropriate correlation methods, generates correlation matrices with hierarchical clustering to identify feature relationships, performs chi-square tests on categorical features to find significant associations with churn, creates mosaic plots and residual heatmaps for visualization, and segments customers into low, medium, and high categories based on ARPU, recharge amount, and usage patterns to identify which customer groups are most at risk.
+- Predict customers who are likely to churn
+- Identify the key behavioral factors associated with churn
+- Segment customers according to their churn risk
+- Provide actionable insights for customer retention
+- Build an interpretable machine learning solution using SHAP analysis
 
-The train test split stage uses 80 percent of the data for training and 20 percent for testing with stratification applied to preserve the original churn rate distribution across both sets, and the split quality is validated by Kolmogorov-Smirnov tests comparing feature distributions between training and test sets to ensure no significant differences exist.
+---
 
-The feature engineering stage creates total activity as the sum of all numeric features representing overall engagement, average usage as the mean of numeric features for normalized behavior, usage variability as the variance across columns to capture inconsistent patterns, frequency as the count of non-zero activities representing customer touchpoints, monetary value as the total sum representing customer lifetime value, activity trend as the difference between last and first activity showing usage direction, activity ratio as last divided by first activity with one added to avoid division by zero, usage per activity dividing total activity by frequency to measure efficiency, revenue efficiency dividing monetary value by total activity to measure value generation, and activity density dividing frequency by number of time periods to measure consistency of engagement.
+## Key Features
 
-The feature selection stage removes constant columns that provide no predictive information, applies variance inflation factor analysis iteratively dropping features with VIF above ten to eliminate multicollinearity, removes features with pairwise correlation above 0.95 to reduce redundancy, applies StandardScaler for normalization to bring all features to a common scale, applies SMOTE for class balancing when the imbalance ratio falls below 0.7 by creating synthetic churned customers through interpolation, and uses Random Forest feature importance dropping features below the 0.002 importance threshold to keep only the most discriminative predictors.
+- **Data Cleaning** — Handles missing values and removes data leakage
+- **EDA & Behavioral Analysis** — Identifies trends, relationships, outliers, and customer segments
+- **Feature Engineering** — Creates activity, RFM, trend, frequency, and efficiency-based features
+- **Feature Selection** — Reduces the feature space from 150 to 25 important features
+- **Class Balancing** — Uses SMOTE to address the 14.5% churn rate
+- **Multi-Model Training** — Compares Random Forest, XGBoost, LightGBM, CatBoost, and Logistic Regression
+- **Model Evaluation** — Uses accuracy, precision, recall, F1, ROC-AUC, and cumulative gains
+- **SHAP Explainability** — Identifies the most important drivers behind churn predictions
+- **Risk Segmentation** — Classifies customers into low, medium, and high churn-risk groups
+- **Retention Insights** — Converts model findings into actionable customer retention recommendations
 
-The model training stage uses randomized search cross-validation with five folds to efficiently explore hyperparameter space, optimizes for F1 score which balances precision and recall appropriately for imbalanced classification, and compares all five models including Random Forest, XGBoost, LightGBM, CatBoost, and Logistic Regression while recording accuracy, precision, recall, F1 score, and training time for each algorithm.
+---
 
-The model evaluation stage calculates the confusion matrix showing true negatives, false positives, false negatives, and true positives to understand prediction errors, generates the ROC curve with an AUC score of 0.91 indicating excellent discriminative ability, creates the precision-recall curve which is more informative for imbalanced problems, builds the cumulative gains curve showing that targeting the top 20 percent of customers captures over 65 percent of actual churners, and produces nine professional visualization plots documenting all aspects of model performance.
+## Benefits
 
-The SHAP analysis stage loads the trained Random Forest model and selects a sample of 200 customers to keep computation time reasonable while providing stable interpretations, uses the TreeExplainer specifically designed for tree-based models to calculate SHAP values representing each feature's contribution to predictions where positive values push predictions toward churn and negative values push away from churn, calculates mean absolute SHAP values across all sampled customers to rank features by their average impact regardless of direction, saves SHAP values to a PKL file for future analysis without recalculation, generates a feature impact donut chart showing the relative contribution of top five features versus all others, creates a horizontal bar chart ranking the top fifteen features with their exact SHAP values, produces a risk segmentation donut chart classifying customers into low risk below 40 percent probability, medium risk between 40 and 70 percent, and high risk above 70 percent for targeted retention, and finally generates business insights by mapping top churn drivers to specific actionable recommendations such as early intervention campaigns for customers showing declining engagement, loyalty rewards for those with low recharge amounts, increased touchpoints for infrequent interactors, and improved service quality for customers with low value per interaction.
+- **Early Churn Detection** — Identifies high-risk customers before they leave
+- **Targeted Retention** — Helps focus retention efforts on customers with higher churn probability
+- **Better Customer Understanding** — Reveals behavioral patterns associated with churn
+- **Explainable Predictions** — SHAP analysis explains why customers are classified as high risk
+- **Reduced Manual Analysis** — Automates customer risk identification
+- **Data-Driven Decisions** — Supports targeted retention strategies using customer behavior
 
-Final Output and Results
+---
 
-The Random Forest classifier achieved the best performance with an F1 score of 0.8314, accuracy of 86.42 percent, precision of 84.23 percent, recall of 82.07 percent, and an AUC-ROC of 0.91 indicating excellent ability to distinguish between churned and non-churned customers. The confusion matrix shows 2,845 true negatives, 412 false positives, 389 false negatives, and 1,834 true positives, while the cumulative gains curve reveals that targeting the top 20 percent of highest-risk customers captures over 65 percent of actual churners. The SHAP analysis identified the top five churn drivers as total activity with impact 0.0842, activity trend showing declining usage with impact 0.0765, recharge amount in month eight with impact 0.0718, frequency of interactions with impact 0.0684, and usage per activity ratio with impact 0.0653. Business insights derived from these drivers recommend early intervention campaigns for declining engagement, loyalty rewards for low recharge customers, increased touchpoints for infrequent interactors, and improved service quality for low value per interaction customers. The final outputs include a trained Random Forest model saved as random_forest_churn_model.pkl ready for production deployment, SHAP values saved as shap_values.pkl, and over 38 professional visualization plots including ROC curves, confusion matrices, cumulative gains charts, and risk segmentation donut charts.
+## Workflow
 
+The system follows this overall process:
+
+**Raw Telecom Data → Data Cleaning → EDA → Train/Test Split → Feature Engineering → Feature Selection & SMOTE → Model Training → Model Evaluation → SHAP Explainability → Risk Segmentation → Retention Insights**
+
+### Workflow Steps
+
+**1. Data Collection**  
+Raw telecom customer data is loaded into the system.
+
+**2. Data Cleaning**  
+The churn target is created using month-nine behavior. Month-nine columns are removed to prevent data leakage, while missing numerical and categorical values are handled using median and mode respectively.
+
+**3. Exploratory Data Analysis**  
+Customer behavior is analyzed through skewness transformation, outlier capping, correlation analysis, categorical association testing, and customer segmentation.
+
+**4. Train/Test Split**  
+The dataset is divided into **80% training and 20% testing** using stratification to preserve the churn distribution.
+
+**5. Feature Engineering**  
+Behavioral features such as total activity, RFM metrics, frequency, activity trends, usage variability, and efficiency ratios are created.
+
+**6. Feature Selection & Class Balancing**  
+The feature set is reduced from **150 to 25 features** using VIF, correlation filtering, and Random Forest importance. SMOTE is applied to address class imbalance.
+
+**7. Model Training**  
+Five machine learning models are compared using five-fold cross-validation and optimized for F1 score.
+
+**8. Model Evaluation**  
+Models are evaluated using accuracy, precision, recall, F1 score, ROC-AUC, precision-recall curves, confusion matrices, and cumulative gains.
+
+**9. SHAP Explainability**  
+SHAP analysis identifies the features contributing most strongly to individual and overall churn predictions.
+
+**10. Risk Segmentation & Retention Insights**  
+Customers are categorized into low, medium, and high-risk groups, and the major churn drivers are converted into actionable retention recommendations.
+
+---
+
+## Model Results
+
+The **Random Forest** model achieved the best overall performance:
+
+- **Accuracy:** 86.42%
+- **Precision:** 84.23%
+- **Recall:** 82.07%
+- **F1 Score:** 0.8314
+- **AUC-ROC:** 0.91
+
+The confusion matrix contains:
+
+- **True Negatives:** 2,845
+- **False Positives:** 412
+- **False Negatives:** 389
+- **True Positives:** 1,834
+
+The cumulative gains analysis shows that targeting the **top 20% highest-risk customers captures more than 65% of actual churners**. :contentReference[oaicite:1]{index=1}
+
+---
+
+## Top Churn Drivers
+
+SHAP analysis identified the following major churn drivers:
+
+1. **Total Activity** — Impact: 0.0842
+2. **Activity Trend** — Impact: 0.0765
+3. **Month 8 Recharge Amount** — Impact: 0.0718
+4. **Frequency of Interactions** — Impact: 0.0684
+5. **Usage per Activity Ratio** — Impact: 0.0653
+
+These insights support targeted actions such as early intervention for declining engagement, loyalty rewards for low-recharge customers, increased customer touchpoints, and service-quality improvements. :contentReference[oaicite:2]{index=2}
+
+---
+
+## Use Cases
+
+- Telecom customer churn prediction
+- Customer retention
+- High-risk customer identification
+- Targeted retention campaigns
+- Customer behavior analysis
+- Churn driver analysis
+- Customer risk segmentation
+- Telecom business intelligence
+
+---
+
+## Project Goal
+
+The goal of **Telecom Customer Churn Prediction** is to transform customer behavioral data into predictive churn intelligence that helps telecom businesses identify high-risk customers and take targeted retention actions.
+
+> **Customer Data → Analyze Behavior → Engineer Features → Predict Churn → Explain Risk → Segment Customers → Take Retention Action**
+
+---
+
+## Final Output
+
+The project produces:
+
+- A trained **Random Forest churn prediction model**
+- Customer churn risk predictions
+- Low, medium, and high-risk customer segments
+- SHAP-based churn explanations
+- Churn driver analysis
+- Model evaluation metrics
+- Professional visualizations including ROC curves, confusion matrices, cumulative gains, and risk segmentation charts
+
+The trained model is saved as `random_forest_churn_model.pkl` and SHAP values are saved as `shap_values.pkl`. The project contains **38+ visualization plots** documenting model performance and customer risk insights. :contentReference[oaicite:3]{index=3}
+
+---
+
+## Workflow Diagram
+
+![Telecom Customer Churn Prediction Workflow](docs/workflow.png)
