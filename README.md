@@ -1,5 +1,5 @@
 # Telecom Customer Churn Prediction
-![Workflow Diagram](Workflow.jpeg)
+![Workflow Diagram](workflow.jpeg)
 
 ## Overview
 
